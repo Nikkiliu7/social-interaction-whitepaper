@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "note": "场景包：首页的预置推荐组合。packs 为空时首页不显示该入口。filters 的键必须是数据契约里的字段ID，值必须是表格里真实存在的标签。",
+  "example": {
+    "id": "extraction-ingame",
+    "title": "搜打撤 · 局内高压社交",
+    "desc": "高压对局中的低摩擦沟通与信任建立。",
+    "filters": {
+      "play_stages": ["局内/赛中"],
+      "interaction_media": ["系统指令(Ping等)"]
+    },
+    "query": ""
+  },
+  "packs": []
+}

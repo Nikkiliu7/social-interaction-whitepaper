@@ -1,0 +1,364 @@
+/* 页面骨架与响应式布局 */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: 0 var(--space-5);
+  background: rgba(7, 10, 18, 0.72);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.app-header__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  cursor: pointer;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+.app-header__mark {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: var(--accent-line);
+  box-shadow: var(--shadow-1);
+  flex: none;
+}
+
+.app-header__title {
+  font-size: var(--fs-md);
+  font-weight: 650;
+  color: var(--text-strong);
+  white-space: nowrap;
+}
+
+.app-header__sub {
+  font-size: var(--fs-xs);
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+.app-header__spacer {
+  flex: 1;
+}
+
+.app-header__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.app-main {
+  min-height: calc(100vh - var(--header-h));
+  padding-bottom: calc(var(--basket-h) + var(--space-6));
+}
+
+.page {
+  width: min(100%, var(--maxw));
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-5);
+}
+
+/* ---------- 首页 ---------- */
+.hero {
+  padding: var(--space-8) 0 var(--space-6);
+  max-width: 900px;
+}
+
+.hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-1);
+  border: 1px solid var(--border-soft);
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+.hero__title {
+  margin: var(--space-4) 0 var(--space-3);
+  font-size: var(--fs-3xl);
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+}
+
+.hero__desc {
+  color: var(--text-muted);
+  font-size: var(--fs-lg);
+  max-width: 62ch;
+}
+
+.hero__search {
+  margin-top: var(--space-6);
+  max-width: 640px;
+}
+
+.stat-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5) var(--space-7);
+  margin-top: var(--space-6);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--border-soft);
+}
+
+.stat__value {
+  font-size: var(--fs-2xl);
+  font-weight: 680;
+  color: var(--text-strong);
+  line-height: 1.1;
+}
+
+.stat__label {
+  font-size: var(--fs-xs);
+  color: var(--text-faint);
+  letter-spacing: 0.06em;
+}
+
+.section {
+  margin-top: var(--space-7);
+}
+
+.section__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.section__title {
+  font-size: var(--fs-xl);
+}
+
+.entry-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(288px, 1fr));
+  gap: var(--space-4);
+}
+
+/* ---------- 列表页 ---------- */
+.list-layout {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+  gap: var(--space-5);
+  align-items: start;
+}
+
+.filter-panel {
+  position: sticky;
+  top: calc(var(--header-h) + var(--space-4));
+  max-height: calc(100vh - var(--header-h) - var(--space-7));
+  overflow-y: auto;
+  padding: var(--space-4);
+  border-radius: var(--radius);
+  background: var(--surface-1);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-1);
+}
+
+.results-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.results-head__count {
+  font-size: var(--fs-md);
+  color: var(--text-muted);
+}
+
+.results-head__count strong {
+  color: var(--text-strong);
+  font-size: var(--fs-lg);
+}
+
+.active-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.case-grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fill, minmax(324px, 1fr));
+}
+
+.case-grid[data-density="compact"] {
+  grid-template-columns: 1fr;
+  gap: var(--space-2);
+}
+
+.sentinel {
+  height: 1px;
+}
+
+/* ---------- 菜篮底栏 ---------- */
+.basket-bar {
+  position: fixed;
+  left: 50%;
+  bottom: var(--space-4);
+  transform: translateX(-50%);
+  z-index: 35;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  width: min(calc(100% - var(--space-5) * 2), 760px);
+  border-radius: var(--radius-lg);
+  background: rgba(16, 20, 31, 0.92);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border-strong);
+  box-shadow: var(--shadow-3);
+}
+
+.basket-bar[hidden] {
+  display: none;
+}
+
+.basket-bar__info {
+  min-width: 0;
+  flex: 1;
+}
+
+.basket-bar__title {
+  font-size: var(--fs-sm);
+  color: var(--text-strong);
+  font-weight: 620;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.basket-bar__meta {
+  font-size: var(--fs-xs);
+  color: var(--text-faint);
+}
+
+/* ---------- 页脚 ---------- */
+.app-footer {
+  border-top: 1px solid var(--border-soft);
+  padding: var(--space-5);
+  color: var(--text-faint);
+  font-size: var(--fs-xs);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  justify-content: center;
+  text-align: center;
+}
+
+/* ---------- 响应式 ---------- */
+.only-narrow {
+  display: none;
+}
+
+@media (max-width: 1279px) {
+  .list-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .list-layout__sidebar {
+    display: none;
+  }
+
+  .only-narrow {
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 767px) {
+  .app-header {
+    padding: 0 var(--space-3);
+    gap: var(--space-2);
+  }
+
+  .app-header__sub,
+  .app-header__desktop-only {
+    display: none;
+  }
+
+  .page {
+    padding: var(--space-4) var(--space-3);
+  }
+
+  .hero {
+    padding: var(--space-6) 0 var(--space-4);
+  }
+
+  .hero__title {
+    font-size: var(--fs-2xl);
+  }
+
+  .hero__desc {
+    font-size: var(--fs-md);
+  }
+
+  .entry-grid,
+  .case-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-row {
+    gap: var(--space-4);
+  }
+
+  .basket-bar {
+    width: calc(100% - var(--space-3) * 2);
+    bottom: var(--space-3);
+  }
+}
+
+/* 移动端抽屉 */
+.drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: none;
+}
+
+.drawer[data-open="true"] {
+  display: block;
+}
+
+.drawer__scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(3, 5, 12, 0.66);
+  backdrop-filter: blur(3px);
+}
+
+.drawer__panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: 82vh;
+  overflow-y: auto;
+  padding: var(--space-4);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  background: var(--surface-solid);
+  border-top: 1px solid var(--border-strong);
+  box-shadow: var(--shadow-3);
+}
+
+.drawer__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
