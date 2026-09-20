@@ -120,7 +120,7 @@ export function homeHtml(model, route) {
             <input id="home-search" type="search" placeholder="搜索案例、玩法、关键词，例如：Ping、点赞、庄园" value="${escapeHtml(
               route.query || ''
             )}" aria-label="全局搜索" />
-            <button class="btn btn--primary btn--sm" type="button" data-action="submit-search">搜索</button>
+            <button class="btn btn--primary btn--lg" type="button" data-action="submit-search">搜索</button>
           </div>
         </div>
         <div class="stat-row">
@@ -149,7 +149,7 @@ export function homeHtml(model, route) {
             <p class="text-muted" style="font-size:var(--fs-sm)">按游戏、目的、阶段或形态进入，多维标签自由组合。</p>
           </div>
           <div class="card" style="padding:var(--space-5)">
-            <h3 style="font-size:var(--fs-md)">2 · 点菜</h3>
+            <h3 style="font-size:var(--fs-md)">2 · 选择</h3>
             <p class="text-muted" style="font-size:var(--fs-sm)">勾选需要的设计，随时查看详情、配图与来源。</p>
           </div>
           <div class="card" style="padding:var(--space-5)">

@@ -104,7 +104,16 @@
 
 .hero__search {
   margin-top: var(--space-6);
-  max-width: 640px;
+  max-width: 720px;
+}
+
+.hero__search .field {
+  padding: 5px 5px 5px var(--space-4);
+}
+
+.hero__search .field input {
+  padding: 13px 0;
+  font-size: var(--fs-md);
 }
 
 .stat-row {

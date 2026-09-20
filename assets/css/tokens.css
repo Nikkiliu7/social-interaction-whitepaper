@@ -26,7 +26,7 @@
   --accent-2: #2fd8e0;
   --accent-3: #ff7ac3;
   --accent-soft: rgba(124, 92, 255, 0.2);
-  --accent-line: linear-gradient(120deg, var(--accent), var(--accent-2));
+  --accent-line: linear-gradient(100deg, #6d5bff 0%, #a04dff 46%, #ff4fa3 100%);
 
   --ok: #49d68a;
   --warn: #ffcf7a;
@@ -60,7 +60,7 @@
 
   --leading: 1.55;
   --leading-relaxed: 1.78;
-  --measure: 68ch;
+  --measure: 86ch;
 
   --card-min-h: 176px;
   --card-pad: 20px;

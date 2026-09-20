@@ -51,20 +51,20 @@ export function caseCardHtml(model, record, { selected = false, density = 'card'
       : `<p class="case-card__summary">${escapeHtml(summaryText)}</p>`;
 
   return `
-    <article class="case-card" data-case-id="${escapeHtml(record.id)}" data-selected="${selected}" data-density="${density}">
+    <article class="case-card" data-case-id="${escapeHtml(record.id)}" data-selected="${selected}" data-density="${density}"
+      data-action="open-case" data-id="${escapeHtml(record.id)}" role="button" tabindex="0"
+      aria-label="查看详情：${escapeHtml(record.shortTitle)}">
       <button class="case-card__check" type="button" role="checkbox" aria-checked="${selected}" aria-pressed="${selected}"
         data-action="toggle-case" data-id="${escapeHtml(record.id)}" title="加入/移出清单">
         <span aria-hidden="true">✓</span>
-        <span class="sr-only">${selected ? '移出清单' : '加入清单'}：${escapeHtml(record.title)}</span>
+        <span class="sr-only">${selected ? '移出清单' : '加入清单'}：${escapeHtml(record.shortTitle)}</span>
       </button>
       <div class="case-card__body">
+        ${badgesHtml(model, record)}
         <div class="case-card__head">
-          <button class="case-card__title" type="button" data-action="open-case" data-id="${escapeHtml(record.id)}">
-            ${escapeHtml(record.title)}
-          </button>
+          <span class="case-card__title">${escapeHtml(record.shortTitle)}</span>
           <span class="case-card__id">${escapeHtml(record.id)}</span>
         </div>
-        ${badgesHtml(model, record)}
         ${summary}
         <div class="tag-row case-card__tags">${tags.join('')}</div>
       </div>

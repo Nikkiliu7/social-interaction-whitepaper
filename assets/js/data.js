@@ -54,6 +54,16 @@ export async function loadLibrary() {
   return buildModel(library, build, packs);
 }
 
+/** 卡片标题去掉「游戏名｜」前缀，游戏名单独以徽标呈现。 */
+function stripGamePrefix(title, game) {
+  if (!game) return title;
+  for (const separator of ['｜', '|']) {
+    const prefix = game + separator;
+    if (title.startsWith(prefix)) return title.slice(prefix.length).trim() || title;
+  }
+  return title;
+}
+
 function buildModel(library, build, packsFile) {
   const fields = Array.isArray(library.fields) ? library.fields : [];
   const tagFields = fields.filter((field) => field.type === 'tags');
@@ -81,10 +91,14 @@ function buildModel(library, build, packsFile) {
     for (const list of Object.values(tags)) searchParts.push(...list);
     for (const value of Object.values(text)) searchParts.push(value);
 
+    const title = raw.reference_case || raw.case_id;
+    const game = tags.game_title?.[0] || '';
+
     return {
       id: raw.case_id,
-      title: raw.reference_case || raw.case_id,
-      game: tags.game_title?.[0] || '',
+      title,
+      shortTitle: stripGamePrefix(title, game),
+      game,
       tags,
       text,
       images,

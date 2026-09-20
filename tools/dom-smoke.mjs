@@ -89,7 +89,8 @@ await check('首页渲染入口与统计', () => {
   assert.ok(qs('#header-count').textContent.includes('条案例'));
   assert.equal(qs('.app-header__mark'), null, '顶栏不应再有 logo 色块');
   assert.equal(qs('#header-subtitle'), null, '顶栏不应再有表格名副标题');
-  assert.ok(qs('#app-footer').textContent.includes('数据版本'));
+  assert.ok(qs('#app-footer').textContent.trim().startsWith('v'), '页脚应只显示版本号');
+  assert.ok(!qs('#app-footer').textContent.includes('来源'), '页脚不应再显示来源信息');;
 });
 
 await check('入口进入列表并预置筛选', async () => {
@@ -193,7 +194,14 @@ await check('筛选变化不丢勾选', async () => {
 
 await check('详情打开、字段与配图', async () => {
   const withImage = qsa('.case-card').find((node) => node.dataset.caseId === 'SOC-001');
-  click((withImage || qs('.case-card')).querySelector('[data-action="open-case"]'));
+  const card = withImage || qs('.case-card');
+  assert.equal(card.dataset.action, 'open-case', '卡片整体应可点击打开详情');
+  assert.ok(
+    !card.querySelector('.case-card__title').textContent.includes('｜'),
+    '卡片标题不应再带游戏名前缀'
+  );
+  assert.ok(card.querySelector('.case-card__badge--game'), '卡片缺少游戏徽标');
+  click(card);
   await tick(80);
   assert.equal(qs('#modal-root').dataset.open, 'true');
   const body = qs('.modal__body').textContent;

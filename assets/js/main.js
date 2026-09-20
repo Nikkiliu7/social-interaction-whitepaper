@@ -35,8 +35,7 @@ import {
   downloadBlob,
   copyText,
   pickFile,
-  escapeHtml,
-  formatDateTime
+  escapeHtml
 } from './lib/dom.js';
 
 const appRoot = qs('#app');
@@ -107,15 +106,7 @@ function setupParticles() {
 }
 
 function renderFooter() {
-  const build = model.build;
-  const parts = [
-    `数据版本 ${escapeHtml(model.schemaVersion)}`,
-    build ? `来源：${escapeHtml(build.source_file)}` : '',
-    build ? `导出于 ${escapeHtml(formatDateTime(build.exported_at))}` : '',
-    `${model.records.length} 条案例 · ${model.facets.length} 个筛选维度`,
-    model.subtitle ? `<span class="app-footer__note">${escapeHtml(model.subtitle)}</span>` : ''
-  ].filter(Boolean);
-  qs('#app-footer').innerHTML = parts.map((part) => `<span>${part}</span>`).join('');
+  qs('#app-footer').innerHTML = `<span>v${escapeHtml(model.schemaVersion)}</span>`;
 
   if (!model.schemaSupported) {
     appRoot.insertAdjacentHTML(

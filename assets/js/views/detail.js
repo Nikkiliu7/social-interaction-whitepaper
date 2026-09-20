@@ -79,7 +79,7 @@ function sourceHtml(model, record) {
 }
 
 export function detailTitleHtml(record) {
-  return `${escapeHtml(record.title)} <span class="case-card__id">${escapeHtml(record.id)}</span>`;
+  return `${escapeHtml(record.shortTitle)} <span class="case-card__id">${escapeHtml(record.id)}</span>`;
 }
 
 export function detailBodyHtml(model, record) {
@@ -100,7 +100,7 @@ export function detailBodyHtml(model, record) {
 export function detailFooterHtml(record, selected) {
   return `
     <button class="btn" type="button" data-action="copy-case-link" data-id="${escapeHtml(record.id)}">复制本案例链接</button>
-    <button class="btn ${selected ? '' : 'btn--primary'}" type="button" data-action="toggle-case" data-id="${escapeHtml(
+    <button class="btn btn--lg ${selected ? '' : 'btn--primary'}" type="button" data-action="toggle-case" data-id="${escapeHtml(
       record.id
     )}" data-detail="true" aria-pressed="${selected}">
       ${selected ? '移出清单' : '加入清单'}
