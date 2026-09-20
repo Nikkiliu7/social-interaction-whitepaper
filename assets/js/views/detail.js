@@ -6,14 +6,15 @@ import { emptyImageHtml, tagHtml } from '../components/ui.js';
 
 function tagsSectionHtml(model, record) {
   const blocks = model.tagFields
-    .map((field) => {
+    .map((field, index) => {
       const values = record.tags[field.key] || [];
       if (!values.length) return '';
       const chips = values
         .map((value) => {
           const entry = getDictionaryEntry(model, field.label, value);
           return tagHtml(value, {
-            variant: field.key === 'game_title' ? 'game' : 'accent',
+            variant: field.key === 'game_title' ? 'game' : '',
+            dim: field.key === 'game_title' ? '' : index % 6,
             title: entry ? `${entry.meaning}${entry.note ? `\n${entry.note}` : ''}` : `${field.label}：${value}`
           });
         })

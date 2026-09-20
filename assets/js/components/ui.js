@@ -8,10 +8,11 @@ const lightboxRoot = () => qs('#lightbox');
 
 const stack = [];
 
-export function tagHtml(value, { variant = '', title = '' } = {}) {
+export function tagHtml(value, { variant = '', title = '', dim = '' } = {}) {
   const cls = variant ? `tag tag--${variant}` : 'tag';
   const titleAttr = title ? ` title="${escapeHtml(title)}"` : '';
-  return `<span class="${cls}"${titleAttr}>${escapeHtml(value)}</span>`;
+  const dimAttr = dim === '' || dim === null ? '' : ` data-dim="${escapeHtml(String(dim))}"`;
+  return `<span class="${cls}"${dimAttr}${titleAttr}>${escapeHtml(value)}</span>`;
 }
 
 export function showToast(message, type = '') {

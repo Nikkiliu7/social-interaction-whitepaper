@@ -1,13 +1,18 @@
 /** 列表页：筛选 + 结果增量渲染。 */
 
 import { escapeHtml } from '../lib/dom.js';
-import { filterPanelHtml, activeFiltersHtml } from '../components/filters.js';
+import { filterPanelHtml, activeFiltersHtml, quickFilterBarHtml } from '../components/filters.js';
 import { caseCardHtml } from '../components/caseCard.js';
 
 const BATCH_SIZE = 40;
 let observer = null;
 
-export function listHtml(model, route, counts, { density = 'card', resultCount = 0 } = {}) {
+export function listHtml(
+  model,
+  route,
+  counts,
+  { density = 'card', resultCount = 0, primaryKey = null } = {}
+) {
   return `
     <div class="page">
       <div class="list-layout">
@@ -16,7 +21,7 @@ export function listHtml(model, route, counts, { density = 'card', resultCount =
         </aside>
         <section>
           <div class="results-head">
-            <div class="field field--sm" style="flex:1;min-width:220px">
+            <div class="field field--sm results-head__search">
               <span class="field__icon" aria-hidden="true">⌕</span>
               <input id="list-search" type="search" placeholder="在结果中搜索关键词" value="${escapeHtml(
                 route.query || ''
@@ -33,6 +38,7 @@ export function listHtml(model, route, counts, { density = 'card', resultCount =
             </div>
             <span class="results-head__count"><strong id="result-count">${resultCount}</strong> 条结果</span>
           </div>
+          <div id="quick-filter-slot">${quickFilterBarHtml(model, route, counts, primaryKey)}</div>
           <div id="active-filters">${activeFiltersHtml(model, route)}</div>
           <div class="case-grid" id="case-grid" data-density="${density}"></div>
           <div class="sentinel" id="list-sentinel"></div>

@@ -39,6 +39,14 @@ export function entryFacets(model, entry) {
     .filter(Boolean);
 }
 
+/** 入口主维度：列表页据此自动展开分组并渲染二级快筛栏。 */
+export function entryPrimaryKey(model, entryId) {
+  const entry = typeof entryId === 'string' ? entryById(entryId) : entryId;
+  if (!entry) return null;
+  const facets = entryFacets(model, entry);
+  return facets.length ? facets[0].key : null;
+}
+
 function statHtml(value, label) {
   return `<div class="stat"><div class="stat__value">${escapeHtml(value)}</div><div class="stat__label">${escapeHtml(
     label

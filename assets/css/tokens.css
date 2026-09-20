@@ -58,6 +58,21 @@
   --fs-2xl: 30px;
   --fs-3xl: 42px;
 
+  --leading: 1.55;
+  --leading-relaxed: 1.78;
+  --measure: 68ch;
+
+  --card-min-h: 176px;
+  --card-pad: 20px;
+
+  /* 维度色相：按 model.tagFields 的序号取模映射，新增维度自动有配色 */
+  --hue-0: 262;
+  --hue-1: 186;
+  --hue-2: 330;
+  --hue-3: 152;
+  --hue-4: 38;
+  --hue-5: 212;
+
   --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", "PingFang SC",
     "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;

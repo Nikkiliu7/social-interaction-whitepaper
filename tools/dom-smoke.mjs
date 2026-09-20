@@ -86,7 +86,9 @@ await check('首页渲染入口与统计', () => {
   const entries = qsa('[data-action="open-entry"]');
   assert.ok(entries.length >= 3 && entries.length <= 6, `入口数量异常：${entries.length}`);
   assert.equal(qsa('.filter-group').length, 0, '首页不应铺开筛选面板');
-  assert.ok(qs('#header-subtitle').textContent.includes('条案例'));
+  assert.ok(qs('#header-count').textContent.includes('条案例'));
+  assert.equal(qs('.app-header__mark'), null, '顶栏不应再有 logo 色块');
+  assert.equal(qs('#header-subtitle'), null, '顶栏不应再有表格名副标题');
   assert.ok(qs('#app-footer').textContent.includes('数据版本'));
 });
 
@@ -101,6 +103,37 @@ await check('入口进入列表并预置筛选', async () => {
   const chips = qs('#active-filters').textContent;
   assert.ok(chips.includes(value), `已选条件未显示：${key}=${value}`);
   assert.ok(Number(qs('#result-count').textContent) > 0);
+});
+
+await check('入口主维度自动展开并渲染二级快筛', () => {
+  const bar = qs('.quick-filter');
+  assert.ok(bar, '缺少二级快筛栏');
+  const group = qs(`.filter-group[data-key="${bar.dataset.key}"]`);
+  assert.ok(group, '左侧缺少主维度分组');
+  assert.equal(group.dataset.open, 'true', '主维度分组未自动展开');
+  const openGroups = qsa('.filter-group[data-open="true"]');
+  assert.equal(openGroups.length, 1, `入口进入时只应展开主维度，实际 ${openGroups.length} 个`);
+  const picked = qs('.quick-chip[aria-pressed="true"]');
+  assert.ok(picked, '入口标签未在快筛栏同步为选中');
+  assert.ok(qs('#active-filters').textContent.includes(picked.dataset.value));
+});
+
+await check('快筛栏与左侧面板、面包屑三者同步', async () => {
+  const chip = qsa('.quick-chip').find((node) => node.getAttribute('aria-pressed') === 'false');
+  assert.ok(chip, '快筛栏没有可选项');
+  const value = chip.dataset.value;
+  click(chip);
+  await tick(80);
+  assert.ok(qs(`.quick-chip[data-value="${value}"][aria-pressed="true"]`), '快筛未选中');
+  assert.ok(qs(`.filter-option[data-value="${value}"][aria-pressed="true"]`), '左侧面板未同步');
+  assert.ok(qs('#active-filters').textContent.includes(value), '面包屑未同步');
+  click(qs(`[data-action="remove-filter"][data-value="${value}"]`));
+  await tick(80);
+  assert.equal(
+    qs(`.quick-chip[data-value="${value}"]`).getAttribute('aria-pressed'),
+    'false',
+    '面包屑移除后快筛未同步'
+  );
 });
 
 await check('移除条件后结果变化', async () => {

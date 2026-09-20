@@ -1,33 +1,54 @@
-/** 案例卡：列表层只展示名称、游戏、核心标签与勾选控件。 */
+/** 案例卡：列表层只展示名称、游戏、核心标签与勾选控件，视觉层级由 data-dim 与 CSS 决定。 */
 
 import { escapeHtml } from '../lib/dom.js';
-import { tagHtml } from './ui.js';
 
-const MAX_TAGS_CARD = 6;
-const MAX_TAGS_COMPACT = 4;
+const MAX_TAGS_CARD = 5;
+const MAX_TAGS_COMPACT = 3;
 
-function coreTags(model, record, limit) {
+function chipHtml(value, { dim = '', title = '', variant = '' } = {}) {
+  const cls = variant ? `tag tag--${variant}` : 'tag';
+  return `<span class="${cls}" data-dim="${escapeHtml(String(dim))}" title="${escapeHtml(
+    title || value
+  )}">${escapeHtml(value)}</span>`;
+}
+
+/** 维度序号 → 色相，新增维度无需改代码即有配色。 */
+function dimensionTags(model, record, limit) {
   const chips = [];
-  if (record.game) chips.push(tagHtml(record.game, { variant: 'game' }));
-  for (const field of model.tagFields) {
-    if (field.key === 'game_title') continue;
+  let overflow = 0;
+  model.tagFields.forEach((field, index) => {
+    if (field.key === 'game_title' || field.key === 'game_genres') return;
     for (const value of record.tags[field.key] || []) {
-      if (chips.length >= limit) return chips;
-      chips.push(tagHtml(value, { title: `${field.label}：${value}` }));
+      if (chips.length >= limit) {
+        overflow += 1;
+        continue;
+      }
+      chips.push(chipHtml(value, { dim: index % 6, title: `${field.label}：${value}` }));
     }
-  }
+  });
+  if (overflow) chips.push(`<span class="tag tag--more">+${overflow}</span>`);
   return chips;
 }
 
+function badgesHtml(model, record) {
+  const badges = [];
+  if (record.game) {
+    badges.push(`<span class="case-card__badge case-card__badge--game">${escapeHtml(record.game)}</span>`);
+  }
+  for (const genre of record.tags.game_genres || []) {
+    badges.push(`<span class="case-card__badge">${escapeHtml(genre)}</span>`);
+  }
+  return badges.length ? `<div class="case-card__badges">${badges.join('')}</div>` : '';
+}
+
 export function caseCardHtml(model, record, { selected = false, density = 'card' } = {}) {
-  const limit = density === 'compact' ? MAX_TAGS_COMPACT : MAX_TAGS_CARD;
-  const tags = coreTags(model, record, limit);
+  const compact = density === 'compact';
+  const tags = dimensionTags(model, record, compact ? MAX_TAGS_COMPACT : MAX_TAGS_CARD);
+  const summaryText = (record.text.trigger_context || record.text.use_cases || '').replace(/\s+/g, ' ');
   const summary =
-    density === 'compact'
+    compact || !summaryText
       ? ''
-      : `<p class="text-muted" style="font-size:var(--fs-sm);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${escapeHtml(
-          (record.text.trigger_context || record.text.use_cases || '').replace(/\s+/g, ' ')
-        )}</p>`;
+      : `<p class="case-card__summary">${escapeHtml(summaryText)}</p>`;
 
   return `
     <article class="case-card" data-case-id="${escapeHtml(record.id)}" data-selected="${selected}" data-density="${density}">
@@ -43,8 +64,9 @@ export function caseCardHtml(model, record, { selected = false, density = 'card'
           </button>
           <span class="case-card__id">${escapeHtml(record.id)}</span>
         </div>
+        ${badgesHtml(model, record)}
         ${summary}
-        <div class="tag-row">${tags.join('')}</div>
+        <div class="tag-row case-card__tags">${tags.join('')}</div>
       </div>
     </article>`;
 }

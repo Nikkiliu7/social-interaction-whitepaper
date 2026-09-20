@@ -10,17 +10,19 @@ import {
   removeFilterValue
 } from './router.js';
 import * as state from './state.js';
-import { homeHtml, entryById, entryFacets } from './views/home.js';
+import { homeHtml, entryById, entryPrimaryKey } from './views/home.js';
 import { listHtml, mountResults, emptyResultHtml, destroyResults } from './views/list.js';
 import { detailBodyHtml, detailFooterHtml, detailTitleHtml } from './views/detail.js';
 import * as basketView from './views/basket.js';
 import {
   filterPanelHtml,
   activeFiltersHtml,
+  quickFilterBarHtml,
   initFilterGroups,
   toggleGroup,
   expandGroup,
-  openGroup
+  focusGroup,
+  applyPendingFocus
 } from './components/filters.js';
 import * as ui from './components/ui.js';
 import { createParticles } from './lib/particles.js';
@@ -42,6 +44,8 @@ let model = null;
 let particles = null;
 let lastShellKey = '';
 let basketModalOpen = false;
+let currentPrimaryKey = null;
+let lastFocusedEntry = undefined;
 
 /* ---------------- 启动 ---------------- */
 
@@ -89,10 +93,8 @@ function renderLoadError(error) {
 }
 
 function setupHeader() {
-  const subtitle = model.build
-    ? `${model.build.source_file} · ${model.build.records} 条案例`
-    : model.subtitle;
-  qs('#header-subtitle').textContent = subtitle;
+  const total = model.build?.records ?? model.records.length;
+  qs('#header-count').innerHTML = `<strong>${Number(total)}</strong><span class="app-header__count-unit">条案例</span>`;
 }
 
 function setupParticles() {
@@ -110,7 +112,8 @@ function renderFooter() {
     `数据版本 ${escapeHtml(model.schemaVersion)}`,
     build ? `来源：${escapeHtml(build.source_file)}` : '',
     build ? `导出于 ${escapeHtml(formatDateTime(build.exported_at))}` : '',
-    `${model.records.length} 条案例 · ${model.facets.length} 个筛选维度`
+    `${model.records.length} 条案例 · ${model.facets.length} 个筛选维度`,
+    model.subtitle ? `<span class="app-footer__note">${escapeHtml(model.subtitle)}</span>` : ''
   ].filter(Boolean);
   qs('#app-footer').innerHTML = parts.map((part) => `<span>${part}</span>`).join('');
 
@@ -153,14 +156,24 @@ function currentRecords(route) {
 
 function renderListView(route) {
   const entry = entryById(route.entry);
-  if (entry) for (const facet of entryFacets(model, entry)) openGroup(facet.key);
-  initFilterGroups(model, route);
+  const primaryKey = entry ? entryPrimaryKey(model, entry) : null;
+  currentPrimaryKey = primaryKey;
+  initFilterGroups(model, route, primaryKey);
+  if (route.entry !== lastFocusedEntry) {
+    lastFocusedEntry = route.entry;
+    if (primaryKey) focusGroup(primaryKey, Object.keys(route.filters || {}));
+  }
 
   const counts = facetCounts(model, { filters: route.filters, query: route.query });
   const records = currentRecords(route);
   const density = state.getPrefs().density;
 
-  appRoot.innerHTML = listHtml(model, route, counts, { density, resultCount: records.length });
+  appRoot.innerHTML = listHtml(model, route, counts, {
+    density,
+    resultCount: records.length,
+    primaryKey
+  });
+  applyPendingFocus(appRoot);
   mountResults(appRoot, model, records, { density, isSelected: state.isSelected });
   if (!records.length) qs('#list-empty').innerHTML = emptyResultHtml(route);
   renderFooter();
@@ -175,6 +188,10 @@ function refreshResults(route) {
   if (countNode) countNode.textContent = String(records.length);
   const chips = qs('#active-filters');
   if (chips) chips.innerHTML = activeFiltersHtml(model, route);
+  const quickSlot = qs('#quick-filter-slot');
+  if (quickSlot) {
+    quickSlot.innerHTML = quickFilterBarHtml(model, route, counts, currentPrimaryKey);
+  }
   refreshFilterPanels(route, counts);
   mountResults(appRoot, model, records, { density, isSelected: state.isSelected });
   const empty = qs('#list-empty');
@@ -480,6 +497,11 @@ const ACTIONS = {
     navigate({ name: 'list', filters });
   },
   'clear-filters': () => navigate({ name: 'list', filters: {} }),
+  'clear-filter-key': (_event, target) => {
+    const filters = { ...getRoute().filters };
+    delete filters[target.dataset.key];
+    navigate({ name: 'list', filters });
+  },
   'clear-query': () => navigate({ name: 'list', query: '' }),
   'clear-all': () => navigate({ name: 'list', filters: {}, query: '' }),
   'toggle-group': (_event, target) => {
