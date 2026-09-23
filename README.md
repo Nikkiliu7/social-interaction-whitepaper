@@ -21,15 +21,61 @@ cd web && python -m http.server 8000
 
 ## 分享给别人
 
-网页在你本机的 `d:\ai_empty\社交白皮书\web\`（仓库内 `web/`）。它是纯静态站，没有后端，所以 `http://localhost:8000` 这个地址**只有你自己能打开**，直接发给别人无效。三种可行方式：
+**线上地址（已发布，任何人可直接打开，无需登录）：**
+
+```
+https://nikkiliu7.github.io/social-interaction-whitepaper/
+```
+
+托管方式：GitHub Pages + public 仓库 `Nikkiliu7/social-interaction-whitepaper`，仓库内**只有 `web/` 子树**（Excel、`openspec/`、内部文档均不上传，留在本地）。
+
+### 更新线上站点
+
+本地改完（改了 Excel 或改了页面代码）后，一条命令：
+
+```bat
+maintenance\publish_pages.bat
+```
+
+脚本依次做：找 `*v1.1*.xlsx` 导出到 `web/data` → 跑 `check.mjs` / `smoke.mjs` / `dom-smoke.mjs` → `git add -A` 提交 → `git subtree split --prefix=web` → 推到远端 `pages` 的 `main` 分支。任一步失败即中止并打印 `[FAIL]`。
+
+只改了页面代码、没动 Excel 时可跳过导出：
+
+```bat
+maintenance\publish_pages.bat --no-import
+```
+
+推送后 1~2 分钟生效，查构建状态：
+
+```bat
+gh api repos/Nikkiliu7/social-interaction-whitepaper/pages/builds/latest --jq .status
+```
+
+### 换设备开工清单
+
+新电脑上要能继续开发并发布，按顺序：
+
+| 步骤 | 命令 / 动作 | 校验 |
+| --- | --- | --- |
+| 1. 装 Python 3 + 依赖 | `python -m pip install openpyxl pillow` | `python -c "import openpyxl,PIL"` 无报错 |
+| 2. 装 Node.js（仅自检用） | 官网 LTS | `node -v` 有输出 |
+| 3. 装 GitHub CLI | `winget install GitHub.cli` | `gh --version` 有输出 |
+| 4. 登录 GitHub | `gh auth login` → GitHub.com → HTTPS → 浏览器授权 | `gh auth status` 显示 `✓ Logged in` |
+| 5. 取项目 | 源文件（Excel / `openspec/` / 文档）不在 GitHub 上，需从原设备拷贝整个项目目录 | 根目录能看到 `*v1.1*.xlsx` 与 `web/` |
+| 6. 起本地服务 | `cd web && python -m http.server 8000` | 打开 http://localhost:8000 正常 |
+| 7. 跑自检 | 见下方「自检」小节 | 全部通过 |
+| 8. 发布 | `maintenance\publish_pages.bat` | 打印 `DONE.` |
+
+注意：第 5 步是当前方案的唯一手工环节——源文件刻意不上传 GitHub。若以后希望换设备直接 `git clone` 拿到全部源文件，需另建一个 **private 仓库**存整个项目（决策见《社交白皮书开发记录》第九节）。
+
+### 其他分享方式（备用）
 
 | 方式 | 做法 | 适合 | 限制 |
 | --- | --- | --- | --- |
 | 局域网临时分享 | `cd web && python -m http.server 8000 --bind 0.0.0.0`，把 `http://<你的内网IP>:8000` 发给同网段同事（Windows 用 `ipconfig` 查 IPv4） | 会议室现场演示 | 需同一网络；你的电脑关机/休眠即失效；可能要放行防火墙 |
-| 静态托管（长期推荐） | 把整个 `web/` 目录上传到任意静态服务：内网 Nginx、对象存储、GitHub Pages 等，无需构建，上传即用 | 固定链接、长期分享 | 需要一个托管位置；含公司资料时注意选内网 |
 | 打包发送 | 压缩 `web/` 发给对方，对方解压后同样用 `python -m http.server` 打开 | 离线、外发评审 | 对方不能双击 `index.html`（浏览器禁止 `file://` 读 JSON） |
 
-说明：清单的「分享链接」是把勾选结果编码进 URL 的 hash，本身不含服务器，所以它只能在**对方也能打开这个站点**的前提下生效；否则请改用清单导出的 Markdown / CSV / JSON 文件。
+说明：清单的「分享链接」是把勾选结果编码进 URL 的 hash，本身不含服务器，所以它只能在**对方也能打开这个站点**的前提下生效（线上地址已满足）；否则请改用清单导出的 Markdown / CSV / JSON 文件。
 
 ## 目录
 
