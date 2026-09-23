@@ -39,7 +39,7 @@ maintenance\publish_pages.bat
 
 脚本依次做：从 `outputs/social-library-v1.1/` 取 `*v1.1*.xlsx`（**唯一权威工作簿**）导出到 `web/data` → 跑 `check.mjs` / `smoke.mjs` / `dom-smoke.mjs` → `git add -A` 提交 → `git subtree split --prefix=web` → 推到远端 `pages` 的 `main` 分支。任一步失败即中止并打印 `[FAIL]`。
 
-⚠️ 仓库根目录另有一份同名 `社交体验列表_v1.1_无宏审核稿.xlsx`，是**旧副本**（标签仍是改名前的「沙雕欢乐」）。脚本已固定只读 `outputs/social-library-v1.1/`，请勿改用根目录那份。
+⚠️ `outputs/social-library-v1.1/backup/` 下有两份 `*_旧副本勿用.*`（标签仍是改名前的「沙雕欢乐」），只作历史留存。脚本已固定只读 `outputs/social-library-v1.1/` 根层，别去 backup 里取表。
 
 只改了页面代码、没动 Excel 时可跳过导出：
 
