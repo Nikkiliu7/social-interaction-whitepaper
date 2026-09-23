@@ -37,7 +37,9 @@ https://nikkiliu7.github.io/social-interaction-whitepaper/
 maintenance\publish_pages.bat
 ```
 
-脚本依次做：找 `*v1.1*.xlsx` 导出到 `web/data` → 跑 `check.mjs` / `smoke.mjs` / `dom-smoke.mjs` → `git add -A` 提交 → `git subtree split --prefix=web` → 推到远端 `pages` 的 `main` 分支。任一步失败即中止并打印 `[FAIL]`。
+脚本依次做：从 `outputs/social-library-v1.1/` 取 `*v1.1*.xlsx`（**唯一权威工作簿**）导出到 `web/data` → 跑 `check.mjs` / `smoke.mjs` / `dom-smoke.mjs` → `git add -A` 提交 → `git subtree split --prefix=web` → 推到远端 `pages` 的 `main` 分支。任一步失败即中止并打印 `[FAIL]`。
+
+⚠️ 仓库根目录另有一份同名 `社交体验列表_v1.1_无宏审核稿.xlsx`，是**旧副本**（标签仍是改名前的「沙雕欢乐」）。脚本已固定只读 `outputs/social-library-v1.1/`，请勿改用根目录那份。
 
 只改了页面代码、没动 Excel 时可跳过导出：
 
@@ -61,7 +63,7 @@ gh api repos/Nikkiliu7/social-interaction-whitepaper/pages/builds/latest --jq .s
 | 2. 装 Node.js（仅自检用） | 官网 LTS | `node -v` 有输出 |
 | 3. 装 GitHub CLI | `winget install GitHub.cli` | `gh --version` 有输出 |
 | 4. 登录 GitHub | `gh auth login` → GitHub.com → HTTPS → 浏览器授权 | `gh auth status` 显示 `✓ Logged in` |
-| 5. 取项目 | 源文件（Excel / `openspec/` / 文档）不在 GitHub 上，需从原设备拷贝整个项目目录 | 根目录能看到 `*v1.1*.xlsx` 与 `web/` |
+| 5. 取项目 | 源文件（Excel / `openspec/` / 文档）不在 GitHub 上，需从原设备拷贝整个项目目录 | 根目录能看到 `outputs/social-library-v1.1/` 与 `web/` |
 | 6. 起本地服务 | `cd web && python -m http.server 8000` | 打开 http://localhost:8000 正常 |
 | 7. 跑自检 | 见下方「自检」小节 | 全部通过 |
 | 8. 发布 | `maintenance\publish_pages.bat` | 打印 `DONE.` |
